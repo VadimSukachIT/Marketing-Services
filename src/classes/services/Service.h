@@ -13,9 +13,14 @@ public:
 
     virtual ~Service(){};
 
-    virtual void perform() = 0;
+    virtual int perform() = 0;
 
     virtual string getTemplate() = 0;
+
+    virtual void output() = 0;
+
+    virtual void input() = 0;
+//
 };
 
 

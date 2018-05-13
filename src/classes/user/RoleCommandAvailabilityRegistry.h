@@ -8,38 +8,45 @@
 #include "map"
 #include "vector"
 #include "string"
-#include "Admin.h"
-#include "Role.h"
-#include "Promoter.h"
 
 class RoleCommandAvailabilityRegistry {
 private:
-    static map<Role*, vector<string>> ROLE_SERVICE_NAME_MAP;
-public:
+    static map<string, vector<string>> ROLE_SERVICE_NAME_MAP;
     static vector<string> adminServices;
     static vector<string> promoterServices;
 
-    static void fillAdminServices() {
-        adminServices.emplace_back("EMAIL");
-        adminServices.emplace_back("RUN");
-        adminServices.emplace_back("POSTER");
-        adminServices.emplace_back("ADVERT");
-        ROLE_SERVICE_NAME_MAP.insert(pair<Role*, vector<string>>(new Admin, adminServices));
-    }
+public:
+    static void setServices();
 
-    static void fillPromoterServices() {
-        promoterServices.emplace_back("EMAIL");
-        promoterServices.emplace_back("ADVERT");
-        promoterServices.emplace_back("POSTER");
-        ROLE_SERVICE_NAME_MAP.insert(pair<Role*, vector<string>>(new Promoter, promoterServices));
-    }
-
-    static bool canPerfomService(Role* role, string serviceName) {
-        vector<string> myVector = ROLE_SERVICE_NAME_MAP.find(role)->second;
-        return  (std::find(myVector.begin(), myVector.end(), serviceName) != myVector.end());
-    }
+    static bool canPerformService(const string, const string);
 };
 
+void RoleCommandAvailabilityRegistry::setServices() {
+    promoterServices.emplace_back("email");
+    promoterServices.emplace_back("advert");
+    promoterServices.emplace_back("poster");
+    promoterServices.emplace_back("change");
+    adminServices.emplace_back("transport");
+    ROLE_SERVICE_NAME_MAP.insert(pair<string, vector<string>>("promoter", promoterServices));
+
+    adminServices.emplace_back("email");
+    adminServices.emplace_back("run");
+    adminServices.emplace_back("remove");
+    adminServices.emplace_back("change");
+    adminServices.emplace_back("transport");
+    adminServices.emplace_back("poster");
+    adminServices.emplace_back("advert");
+    ROLE_SERVICE_NAME_MAP.insert(pair<string, vector<string>>("admin", adminServices));
+}
+
+bool RoleCommandAvailabilityRegistry::canPerformService(const string role, const string serviceName) {
+    vector<string> myVector = ROLE_SERVICE_NAME_MAP.find(role)->second;
+    return (std::find(myVector.begin(), myVector.end(), serviceName) != myVector.end());
+}
+
+map<string, vector<string>> RoleCommandAvailabilityRegistry::ROLE_SERVICE_NAME_MAP;
+vector<string> RoleCommandAvailabilityRegistry::adminServices;
+vector<string> RoleCommandAvailabilityRegistry::promoterServices;
 
 
 #endif //MARKETINGSERVICES_ROLECOMMANDAVAILABILITYREGISTRY_H
